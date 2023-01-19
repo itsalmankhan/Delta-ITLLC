@@ -1,0 +1,32 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/delta-itllc/delta-itllc-prod', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/delta-itllc/delta-itllc-prod']
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - 'run'
+  - 'deploy'
+  - 'delta-itllc-prod'
+  - '--image'
+  - 'gcr.io/delta-itllc/delta-itllc-prod'
+  - '--port'
+  - '80'
+  - '--region'
+  - 'us-central1'
+  - '--platform'
+  - 'managed'
+  - '--allow-unauthenticated'
+  - '--service-account'
+  - 'sa-prod-web@delta-itllc.iam.gserviceaccount.com'
+  - '--max-instances'
+  - '5'
+  - '--timeout'
+  - '60'
+  - '--memory'
+  - '256Mi'
+  
+images:
+- gcr.io/delta-itllc/delta-itllc-prod
